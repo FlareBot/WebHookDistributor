@@ -25,7 +25,7 @@ public class Example {
     public static void main(String[] args) {
     	// This will say that the server is located at "https://cool-webhooks.flarebot.stream", the service is called "example" and the port for this service is '8181'.
         WebHookDistributor distributor = new WebHookDistributorBuilder("https://cool-webhooks.flarebot.stream", "example", 8181)
-        		// This will add the listener which is defined below.
+        	// This will add the listener which is defined below.
                 .addEventListener(new Listener())
                 // This is the starting retry time, when connection to the server fails it will use this value first and double each failed attempt.
                 .setStartingRetryTime(500)
