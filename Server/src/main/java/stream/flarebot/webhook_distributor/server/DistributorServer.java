@@ -85,12 +85,13 @@ public class DistributorServer {
             res.header("Content-Encoding", "gzip");
             res.header("Content-Type", "application/json");
 
-            logger.info("[" + res.status() + "] Request from " + req.ip() + " (" + req.userAgent() + ") to " + req.uri());
+            logger.info(String.format("[%d] %s Request from %s (%s) to %s",
+                    res.status(), req.requestMethod(), req.ip(), req.userAgent(), req.uri()));
         });
 
         Spark.get("/", (req, res) -> "Hello, World");
 
-        Spark.post("/:service/init", (req, res) -> {
+        Spark.put("/:service/init", (req, res) -> {
             String serviceName = req.params(":service");
             int port;
             if (req.body() == null || req.body().isEmpty())
