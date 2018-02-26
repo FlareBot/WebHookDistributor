@@ -88,6 +88,8 @@ public class DistributorServer {
             logger.info("[" + res.status() + "] Request from " + req.ip() + " (" + req.userAgent() + ") to " + req.uri());
         });
 
+        Spark.get("/", (req, res) -> "Hello, World");
+
         Spark.post("/:service/init", (req, res) -> {
             String serviceName = req.params(":service");
             int port;
