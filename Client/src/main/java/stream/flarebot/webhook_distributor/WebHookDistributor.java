@@ -91,7 +91,7 @@ public class WebHookDistributor {
                 logger.warn("Failed to init service! Retrying in " + retryTime + "ms");
                 try {
                     Thread.sleep(retryTime);
-                    attempts += 1;
+                    attempts++;
                     retryTime *= 2;
                     checkServer();
                 } catch (InterruptedException e1) {
@@ -114,7 +114,7 @@ public class WebHookDistributor {
                     listener.onBatchWebHookReceive((WebHookBatchReceiveEvent) e);
                 else
                     for (JsonElement element : ((WebHookBatchReceiveEvent) e).getWebHooks())
-                        listener.onWebHookReceive(new WebHookReceiveEvent(element, e.getSender()));
+                        listener.onWebHookReceive(new WebHookReceiveEvent(element, e));
             }
             else
                 try {
@@ -130,15 +130,25 @@ public class WebHookDistributor {
             res.header("Content-Type", "application/json");
             res.header("Content-Encoding", "gzip");
 
-            logger.info("[" + res.status() + "] Request from " + req.ip() + " (" + req.userAgent() + ") to " + req.uri());
+            logger.info(String.format("[%d] %s Request from %s (%s) to %s",
+                    res.status(), req.requestMethod(), req.ip(), req.userAgent(), req.uri()));
         });
+
+        Spark.notFound((req, res) -> {
+            res.type("application/json");
+            if (req.requestMethod().equalsIgnoreCase("GET"))
+                return "{\"Hello\": \"World\"}";
+            return "{\"error\":\"Route not found!\"}";
+        });
+
+        Spark.get("/", (req, res) -> "{\"Hello\": \"World\"}");
 
         Spark.post("/", (req, res) -> {
             if (req.body() != null && !req.body().isEmpty()) {
                 try {
                     JsonElement element = parser.parse(req.body());
 
-                    sendEvent(new WebHookReceiveEvent(element, Sender.getSender(req)));
+                    sendEvent(new WebHookReceiveEvent(element, req));
                     return getSuccessRequest(res);
                 } catch (JsonParseException e) {
                     return getBadRequest(res, "Invalid JSON object!");
@@ -154,7 +164,7 @@ public class WebHookDistributor {
                     if (!(element instanceof JsonArray))
                         return getBadRequest(res, "Batch needs to send a JsonArray!");
 
-                    sendEvent(new WebHookBatchReceiveEvent(element.getAsJsonArray(), Sender.getSender(req)));
+                    sendEvent(new WebHookBatchReceiveEvent(element.getAsJsonArray(), req));
                     return getSuccessRequest(res);
                 } catch (JsonParseException e) {
                     return getBadRequest(res, "Invalid JSON object!");
