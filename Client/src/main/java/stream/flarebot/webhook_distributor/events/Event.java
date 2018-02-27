@@ -3,6 +3,7 @@ package stream.flarebot.webhook_distributor.events;
 import spark.Request;
 import stream.flarebot.webhook_distributor.Sender;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class Event {
@@ -24,8 +25,9 @@ public class Event {
         return this.request.headers("Authorization");
     }
 
+    @Nonnull
     public String getIP() {
-        return this.request.ip();
+        return this.request.headers("Sent-By");
     }
 
     protected Request getRequest() {
