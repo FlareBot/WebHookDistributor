@@ -89,7 +89,14 @@ public class DistributorServer {
                     res.status(), req.requestMethod(), req.ip(), req.userAgent(), req.uri()));
         });
 
-        Spark.get("/", (req, res) -> "Hello, World");
+        Spark.notFound((req, res) -> {
+            res.type("application/json");
+            if (req.requestMethod().equalsIgnoreCase("GET"))
+                return "{\"Hello\": \"World\"}";
+            return "{\"error\":\"Route not found!\"}";
+        });
+
+        Spark.get("/", (req, res) -> "{\"Hello\": \"World\"}");
 
         Spark.put("/:service/init", (req, res) -> {
             String serviceName = req.params(":service");
