@@ -18,8 +18,13 @@ public class Example {
     private static class Listener extends WebHookListener {
 
         public void onWebHookReceive(WebHookReceiveEvent e){
-            LoggerFactory.getLogger(Example.class).info(String.format("Received webhook from %s, data: %s",
-                    e.getSender().toString(), e.getPayload().toString()));
+            if (e.getAuthorization() != null && e.getAuthorization().equals("secretKey1337")) {
+                LoggerFactory.getLogger(Example.class).info(String.format("Received webhook from %s, data: %s",
+                        e.getSender().toString(), e.getPayload().toString()));
+            } else
+                LoggerFactory.getLogger(Example.class)
+                        .warn(String.format("Received webhook with invalid authorization from %s pretending to be %s",
+                                e.getIP(), e.getSender().toString()));
         }
     }
 }

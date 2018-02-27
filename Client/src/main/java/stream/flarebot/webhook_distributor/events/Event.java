@@ -24,6 +24,10 @@ public class Event {
         return this.request.headers("Authorization");
     }
 
+    public String getIP() {
+        return this.request.ip();
+    }
+
     protected Request getRequest() {
         return this.request;
     }
