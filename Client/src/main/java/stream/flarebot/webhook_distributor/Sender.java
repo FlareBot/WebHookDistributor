@@ -37,7 +37,7 @@ public enum Sender {
     }
     
     public String getUserAgent() {
-        return requestPredicate.
+        return this.userAgent;
     }
 
     @Override
