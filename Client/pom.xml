@@ -6,7 +6,7 @@
     <parent>
         <groupId>stream.flarebot</groupId>
         <artifactId>WebHookDistributor</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
