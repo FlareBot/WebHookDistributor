@@ -7,11 +7,13 @@ public class Delivery {
 
     private String ip;
     private String userAgent;
+    private String authorization;
     private JsonElement payload;
 
-    Delivery(String ip, String userAgent, JsonElement payload) {
+    Delivery(String ip, String userAgent, String authorization, JsonElement payload) {
         this.ip = ip;
         this.userAgent = userAgent;
+        this.authorization = authorization;
         this.payload = payload;
     }
 
@@ -25,6 +27,10 @@ public class Delivery {
 
     public JsonElement getPayload() {
         return payload;
+    }
+
+    public String getAuthorization() {
+        return authorization;
     }
 
     public boolean isBatch() {

@@ -139,7 +139,7 @@ public class DistributorServer {
                 return getBadRequest(res, "No body specified!");
 
             JsonElement element = parser.parse(req.body());
-            Delivery delivery = new Delivery(req.ip(), req.userAgent(), element);
+            Delivery delivery = new Delivery(req.ip(), req.userAgent(), req.headers("Authorization"), element);
 
             if (!services.containsKey(serviceName)) {
                 logger.warn("Got webhook event for non-active service. Queued webhook");
@@ -218,11 +218,14 @@ public class DistributorServer {
         logger.info("Sending delivery to " + url);
 
         try {
-            com.squareup.okhttp.Response response = client.newCall(new Request.Builder().url(url)
+            Request.Builder builder = new Request.Builder().url(url)
                     .addHeader("User-Agent", delivery.getUserAgent())
                     .addHeader("Sent-By", delivery.getIp())
-                    .post(RequestBody.create(MediaType.parse("application/json"), delivery.getPayload().toString()))
-                    .build()).execute();
+                    .post(RequestBody.create(MediaType.parse("application/json"), delivery.getPayload().toString()));
+
+            if (delivery.getAuthorization() != null && !delivery.getAuthorization().isEmpty())
+                builder.addHeader("Authorization", delivery.getAuthorization());
+            com.squareup.okhttp.Response response = client.newCall(builder.build()).execute();
 
             if (response.code() != 200) {
                 ResponseBody body = response.body();
