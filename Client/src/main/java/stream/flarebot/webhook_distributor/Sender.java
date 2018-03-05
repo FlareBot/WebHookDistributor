@@ -11,6 +11,7 @@ public enum Sender {
     GITHUB(request -> request.headers().stream().anyMatch(header -> header.startsWith("X-GitHub"))),
     SENTRY(request -> request.userAgent().toLowerCase().startsWith("sentry")),
     POSTMAN(request -> request.userAgent().toLowerCase().contains("postman")),
+    DBL(request -> request.userAgent().equals("DBL")),
     UNKNOWN(noOp -> {
         LoggerFactory.getLogger(Sender.class).warn("Found unknown sender, IP: " + noOp.ip() + ", userAgent: "
                 + noOp.userAgent() + ", Headers: " + noOp.headers().stream()
@@ -20,17 +21,23 @@ public enum Sender {
 
     private static final Sender[] values = values();
     private Predicate<Request> requestPredicate;
+    private String userAgent;
 
     Sender(Predicate<Request> requestPredicate) {
         this.requestPredicate = requestPredicate;
     }
 
     public static Sender getSender(Request request) {
+        this.userAgent = request.userAgent();
         for (Sender sender : values) {
             if (sender.requestPredicate.test(request))
                 return sender;
         }
         return Sender.UNKNOWN;
+    }
+    
+    public String getUserAgent() {
+        return requestPredicate.
     }
 
     @Override
