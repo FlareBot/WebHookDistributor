@@ -28,12 +28,21 @@ public enum Sender {
     }
 
     public static Sender getSender(Request request) {
-        this.userAgent = request.userAgent();
-        for (Sender sender : values) {
-            if (sender.requestPredicate.test(request))
-                return sender;
+        Sender sender = null;
+        for (Sender s : values) {
+            if (s.requestPredicate.test(request)) {
+                sender = s;
+                break;
+            }
         }
-        return Sender.UNKNOWN;
+        if (sender == null)
+            sender = Sender.UNKNOWN;
+        sender.setUserAgent(request.userAgent());
+        return sender;
+    }
+    
+    private void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
     
     public String getUserAgent() {
