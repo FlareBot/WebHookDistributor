@@ -1,6 +1,5 @@
 # WebHookDistributor
-[![Release](https://jitpack.io/v/FlareBot/WebHookDistributor.svg?style=flat-square)]
-(https://jitpack.io/#FlareBot/WebHookDistributor)
+[![Release](https://jitpack.io/v/FlareBot/WebHookDistributor.svg?style=flat-square)](https://jitpack.io/#FlareBot/WebHookDistributor)
 
 ## What is it?
 This is a tool created to distribute web-hooks amongst multiple different clients without the need for exposing multiple ports or making multiple sub-domains. This was created for people who either don't want to expose multiple ports or can't for some reason or another. This allows them to only have 1 port that is open and actually receiving data, from there it can work on sending that to the client that needs it. The system is all dynamic and doesn't use any set constants.
